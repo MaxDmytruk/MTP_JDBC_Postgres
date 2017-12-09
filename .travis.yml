@@ -2,6 +2,9 @@ language: java
 
 install: /bin/true
 
+services:
+  - postgresql
+
 jdk:
   - oraclejdk8
 
@@ -15,6 +18,11 @@ before_script:
     - unzip gradle-2.14-bin.zip
     - export GRADLE_HOME=$PWD/gradle-2.14
     - export PATH=$GRADLE_HOME/bin:$PATH
+    - psql -c 'CREATE TABLE "Repositories" (Id UUID, Name text, Url text, Stars integer, Description text, Language text, CommitsNum integer);' -U postgres maxmax
+    - psql -c 'CREATE TABLE "Languages" (Id TEXT, Name TEXT);' -U postgres maxmax
+    - psql -c 'CREATE TABLE "Users" (Id TEXT, Login TEXT, Url TEXT, Score INTEGER);' -U postgres maxmax
+    - psql -c 'CREATE TABLE "Contributors" (Id TEXT, Login TEXT, contributions INTEGER);' -U postgres maxmax
+    - psql -c 'CREATE TABLE "RepositoryOwners" (Id TEXT, Login TEXT, Url TEXT);' -U postgres maxmax
 
 script:
 - ./gradlew assemble
